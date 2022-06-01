@@ -96,7 +96,7 @@
     }
     if (timestamp - start > 1000 / 10) {
       buildBoard()
-      buildBoard(ctx, option.food.x, option.food.y)
+      buildFood(ctx, option.food.x, option.food.y)
       setSnake()
       start = timestamp;
     }
