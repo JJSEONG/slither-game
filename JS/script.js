@@ -32,17 +32,17 @@
   }
 
   const init = () => {
-    // document.addEventListener('keydown', (event) => {
-    //   if (!/Arrow/gi.test(event.key)) {
-    //     return
-    //   }
-    //   event.preventDefault()
-    //   const direction = getDirection(event.key)
-    //   if(!isDirectionCorrect(direction)) {
-    //     return;
-    //   }
-    //   option.direction = direction
-    // })
+    document.addEventListener('keydown', (event) => {
+      if (!/Arrow/gi.test(event.key)) {
+        return
+      }
+      event.preventDefault()
+      const direction = getDirection(event.key)
+      if(!isDirectionCorrect(direction)) {
+        return;
+      }
+      option.direction = direction
+    })
 
     $play.onclick = () => {
       if(option.gameEnd) {
@@ -60,7 +60,7 @@
         }
         $score.innerHTML = `점수 : 0점`
         $highscore.innerHTML = `최고점수 : ${option.highscore}점`
-        // randomFood()
+        randomFood()
         window.requestAnimationFrame(play)
       }
     }
@@ -89,24 +89,108 @@
     }
   }
 
+  const setDirection = (number, value) => {
+    while (value < 0) {
+      value += number
+    }
+    return value % number
+  }
+
+  const setBody = () => {
+    const tail = option.snake[option.snake.length - 1]
+    const direction = tail.direction
+    let x = tail.x
+    let y = tail.y
+    switch (direction) {
+      // down
+      case 1:
+        y = setDirection(300, y - 10)
+        break
+      // up
+      case -1:
+        y = setDirection(300, y + 10)
+        break
+      // left
+      case -2:
+        x = setDirection(300, x + 10)
+        break
+      // right
+      case 2:
+        x = setDirection(300, x - 10)
+        break
+    }
+    option.snake.push({ x, y, direction })
+  }
+
+  const getFood = () => {
+    const snakeX = option.snake[0].x
+    const snakeY = option.snake[0].y
+    const foodX = option.food.x
+    const foodY = option.food.y
+    if(snake == foodX && snakeY == foodY) {
+      option.score++
+      $score.innerHTML = `점수 : ${option.score}점`
+      setBody()
+      randomFood()
+    }
+  }
+
+  const randomFood = () => {
+    let x = Math.floor(Math.random() * 25) * 10
+    let y = Math.floor(Math.random() * 25) * 10
+    while (option.snake.some((part) => part.x === x && part.y === y)) {
+      x = Math.floor(Math.random() * 25) * 10
+      y = Math.floor(Math.random() * 25) * 10
+    }
+    option.food = ( x, y )
+  }
+
+  const getDirection = (key) => {
+    let direction = 0;
+    switch (key) {
+      case 'ArrowDown':
+        direction = 1        
+        break
+      case 'ArrowUp':
+        direction = -1
+        break
+      case 'ArrowLeft':
+        direction = -2
+        break
+      case 'ArrowRight':
+        direction = 2
+        break
+    }
+    return direction
+  }
+
+  const isDirectionCorrect = (direction) => {
+    return (
+      option.direction === option.snake[0].direction &&
+      option.direction !== -direction
+    )
+  }
+
   const play = (timestamp) => {
     start++
     if (option.gameEnd) {
       return
     }
     if (timestamp - start > 1000 / 10) {
+      if(isGameOver()) {
+      option.gameEnd = true
+      setHighScore()
+      alert('Game Over')
+      return
+    }
       buildBoard()
       buildFood(ctx, option.food.x, option.food.y)
       setSnake()
+      getFood()
       start = timestamp;
     }
     window.requestAnimationFrame(play)
-    // if(isGameOver()) {
-    //   option.gameEnd = true
-    //   setHighScore()
-    //   alert('Game Over')
-    //   return
-    // }
+
   }
 
   init()
