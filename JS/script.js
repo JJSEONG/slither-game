@@ -89,6 +89,15 @@
     }
   }
 
+  const setHighScore = () => {
+    const localScore = option.highScore * 1 || 0
+    const finalScore = $score.textContent.match(/(\d+)/)[0] * 1
+    if(localScore < finalScore) {
+      alert(`최고기록: ${finalScore}점`)
+      localStorage.setItem('score', finalScore)
+    }
+  }
+
   const setDirection = (number, value) => {
     while (value < 0) {
       value += number
@@ -200,18 +209,25 @@
     )
   }
 
+  const isGameOver = () => {
+    const head = option.snake[0]
+    return option.snake.some(
+      (body, index) => index !== 0 && head.x === body.x && head.y === body.y
+    )
+  }
+
   const play = (timestamp) => {
     start++
     if (option.gameEnd) {
       return
     }
     if (timestamp - start > 1000 / 10) {
-    //   if(isGameOver()) {
-    //   option.gameEnd = true
-    //   setHighScore()
-    //   alert('Game Over')
-    //   return
-    // }
+      if(isGameOver()) {
+      option.gameEnd = true
+      setHighScore()
+      alert('Game Over')
+      return
+     }
       playSnake()
       buildBoard()
       buildFood(ctx, option.food.x, option.food.y)
