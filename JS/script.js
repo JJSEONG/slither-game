@@ -127,7 +127,7 @@
     const snakeY = option.snake[0].y
     const foodX = option.food.x
     const foodY = option.food.y
-    if(snake == foodX && snakeY == foodY) {
+    if(snakeX == foodX && snakeY == foodY) {
       option.score++
       $score.innerHTML = `점수 : ${option.score}점`
       setBody()
@@ -142,7 +142,7 @@
       x = Math.floor(Math.random() * 25) * 10
       y = Math.floor(Math.random() * 25) * 10
     }
-    option.food = ( x, y )
+    option.food = { x, y }
   }
 
   const getDirection = (key) => {
@@ -177,12 +177,13 @@
       return
     }
     if (timestamp - start > 1000 / 10) {
-      if(isGameOver()) {
-      option.gameEnd = true
-      setHighScore()
-      alert('Game Over')
-      return
-    }
+    //   if(isGameOver()) {
+    //   option.gameEnd = true
+    //   setHighScore()
+    //   alert('Game Over')
+    //   return
+    // }
+      // playSnake()
       buildBoard()
       buildFood(ctx, option.food.x, option.food.y)
       setSnake()
