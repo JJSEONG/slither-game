@@ -145,6 +145,35 @@
     option.food = { x, y }
   }
 
+  const playSnake = () => {
+    let x = option.snake[0].x
+    let y = option.snake[0].y
+    switch (option.direction) {
+      // down
+      case 1:
+        y = setDirection(300, y + 10)
+        break
+      // up
+      case -1:
+        y = setDirection(300, y - 10)
+        break
+      // left
+      case -2:
+        x = setDirection(300, x - 10)
+        break
+      // right
+      case 2:
+        x = setDirection(300, x + 10)
+        break
+    }
+    const snake = [{x, y, direction: option.direction}]
+    const snakeLength = option.snake.length
+    for (let i = 1; i < snakeLength; ++i) {
+      snake.push({ ...option.snake[i - 1] })
+    }
+    option.snake = snake
+  }
+
   const getDirection = (key) => {
     let direction = 0;
     switch (key) {
@@ -183,7 +212,7 @@
     //   alert('Game Over')
     //   return
     // }
-      // playSnake()
+      playSnake()
       buildBoard()
       buildFood(ctx, option.food.x, option.food.y)
       setSnake()
